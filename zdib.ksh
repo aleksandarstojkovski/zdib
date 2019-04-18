@@ -7,6 +7,8 @@
 # Email            : aleksandar@stojkovski.ch                                          
 ######################################################################
 
+AS_SCRIPT_NAME=$(basename "$0")
+
 ######################################################################
 # functions
 ######################################################################
@@ -90,7 +92,7 @@ function dis_usage {
     fi
 
     echo
-    echo "Usage: ./$(basename "$0") -bt <BLOCK_THRESHOLD> -bn <BLACKLIST_NAME> -f <FILE> [ -w <WHITELIST> ]"
+    echo "Usage: ./"$AS_SCRIPT_NAME" -bt <BLOCK_THRESHOLD> -bn <BLACKLIST_NAME> -f <FILE> [ -w <WHITELIST> ]"
     echo
     echo "      -bt threshold of login failures that must be exceeded to block an ip address"
     echo "      -bn name of the ipset blacklist"
@@ -109,7 +111,7 @@ function dis_usage {
 
 function print_msg {
 
-    print "$(date '+[%d.%m.%Y %H:%M:%S]') $1 : $(basename "$0") : $2"
+    print "$(date '+[%d.%m.%Y %H:%M:%S]') $1 : "$AS_SCRIPT_NAME" : $2"
 
 }
 
@@ -166,7 +168,7 @@ fi
 ###################################
 
 IFS=","
-AS_WHITELIST_ARRAY=$($AS_WHITELIST_STRING)
+AS_WHITELIST_ARRAY=($AS_WHITELIST_STRING)
 unset IFS
 
 ###################################
@@ -201,7 +203,7 @@ for AS_LINE in $(echo "$AS_ATTACKER_LIST"); do
   fi
 
   if [[ $AS_IP_WHITELISTED = "TRUE" ]]; then
-    print_msg "INFO" "IP:$AS_ATTACKER_IP is above the threshold, but is whitelisted. Skipping."
+    print_msg "INFO" "IP:$AS_ATTACKER_IP is above the threshold, but it's whitelisted. Skipping."
   else
     AS_IS_IP_ALREADY_BLACKLISTED=$(ipset list "$AS_IPSET_BLACKLIST_NAME" | grep -w "$AS_ATTACKER_IP")
     if [[ -z "$AS_IS_IP_ALREADY_BLACKLISTED" ]]; then
